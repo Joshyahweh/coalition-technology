@@ -23,7 +23,7 @@ const AllPatients = () => {
         <h4 className="text-[#072635] font-bold">Patients</h4>
         <AiOutlineSearch />
       </div>
-      <div className="h-[50rem] overflow-y-auto">
+      <div className="h-[53rem] overflow-y-auto">
         {data.map((item) => (
           <div
             key={item.name}

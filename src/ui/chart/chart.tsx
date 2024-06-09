@@ -1,8 +1,7 @@
-"use client";
 import React, { useState } from "react";
 import { Line } from "react-chartjs-2";
 import {
-  Chart,
+  Chart as ChartJS,
   CategoryScale,
   LinearScale,
   PointElement,
@@ -10,18 +9,50 @@ import {
   Title,
   Tooltip,
   Legend,
+  ChartEvent,
+  ActiveElement,
+  ChartTypeRegistry,
+  TooltipItem,
 } from "chart.js";
 import { BiSolidDownArrow, BiSolidUpArrow } from "react-icons/bi";
+import { useDiagnosisContext } from "@/context/diagnosis-context";
 
-Chart.register(
+ChartJS.register(
   CategoryScale,
   LinearScale,
   PointElement,
   LineElement,
   Title,
   Tooltip,
-  Legend
+  // Legend
 );
+
+interface DiagnosisHistoryEntry {
+  month: string;
+  year: number;
+  blood_pressure: {
+    systolic: {
+      value: number;
+      levels: string;
+    };
+    diastolic: {
+      value: number;
+      levels: string;
+    };
+  };
+  heart_rate: {
+    value: number;
+    levels: string;
+  };
+  respiratory_rate: {
+    value: number;
+    levels: string;
+  };
+  temperature: {
+    value: number;
+    levels: string;
+  };
+}
 
 interface CustomChartProps {
   data: {
@@ -30,9 +61,14 @@ interface CustomChartProps {
     diastolic: { value: number; levels: string };
   }[];
   title?: string;
+  diagnosisHistory: DiagnosisHistoryEntry[];
 }
 
-const CustomChart: React.FC<CustomChartProps> = ({ data, title }) => {
+const CustomChart: React.FC<CustomChartProps> = ({
+  data,
+  title,
+  diagnosisHistory,
+}) => {
   const [filter, setFilter] = useState<number>(6);
   const [clickedSystolicValue, setClickedSystolicValue] = useState<number>(0);
   const [clickedSystolicLevel, setClickedSystolicLevel] = useState<
@@ -42,6 +78,15 @@ const CustomChart: React.FC<CustomChartProps> = ({ data, title }) => {
   const [clickedDiastolicLevel, setClickedDiastolicLevel] = useState<
     "Higher than Average" | "Lower than Average" | "Normal"
   >("Normal");
+
+  const {
+    setHeartRate,
+    setRespiratoryRate,
+    setTemperature,
+    setHeartRateLevel,
+    setRespiratoryRateLevel,
+    setTemperatureLevel,
+  } = useDiagnosisContext();
 
   const filteredData = data.slice(-filter);
 
@@ -58,6 +103,8 @@ const CustomChart: React.FC<CustomChartProps> = ({ data, title }) => {
         pointBorderColor: "#fff",
         pointHoverBackgroundColor: "#fff",
         pointHoverBorderColor: "rgba(75,192,192,1)",
+        pointRadius: 5,
+        pointHoverRadius: 8,
       },
       {
         label: "",
@@ -69,6 +116,8 @@ const CustomChart: React.FC<CustomChartProps> = ({ data, title }) => {
         pointBorderColor: "#fff",
         pointHoverBackgroundColor: "#fff",
         pointHoverBorderColor: "rgba(75,192,192,1)",
+        pointRadius: 5,
+        pointHoverRadius: 8,
       },
     ],
   };
@@ -85,8 +134,10 @@ const CustomChart: React.FC<CustomChartProps> = ({ data, title }) => {
       },
       tooltip: {
         callbacks: {
-          label: (context) => {
-            return `${context.dataset.label}: ${context.raw}`;
+          label: (context: TooltipItem<"line">) => {
+            const label = context.dataset.label || "";
+            const value = context.raw as number;
+            return `${label}: ${value}`;
           },
         },
       },
@@ -97,36 +148,70 @@ const CustomChart: React.FC<CustomChartProps> = ({ data, title }) => {
           display: false,
           text: "Month",
         },
+        grid: {
+          display: false,
+        },
       },
       y: {
         title: {
           display: false,
           text: "Blood Pressure",
         },
+        grid: {
+          drawBorder: true,
+          color: (context: any) => {
+            if (context.tick.value === 0) {
+              return "#000"; // Color for the primary line
+            }
+            return "rgba(0, 0, 0, 0.1)"; // Color for other grid lines
+          },
+        },
       },
     },
-    onClick: (event, elements, chart) => {
+    onClick: (
+      event: ChartEvent,
+      elements: ActiveElement[],
+      chart: ChartJS<keyof ChartTypeRegistry, (number | null)[], unknown>
+    ) => {
       if (elements.length > 0) {
         const element = elements[0];
         const datasetIndex = element.datasetIndex;
         const index = element.index;
-        const value = chart.data.datasets[datasetIndex].data[index];
-        if (datasetIndex === 0) {
-          setClickedSystolicValue(value as number);
-          setClickedSystolicLevel(
-            filteredData[index].systolic.levels as
-              | "Higher than Average"
-              | "Lower than Average"
-              | "Normal"
-          );
-        } else {
-          setClickedDiastolicValue(value as number);
-          setClickedDiastolicLevel(
-            filteredData[index].diastolic.levels as
-              | "Higher than Average"
-              | "Lower than Average"
-              | "Normal"
-          );
+        const value = chart.data.datasets[datasetIndex].data[index] as number;
+        if (chart.data.labels === undefined) {
+          return;
+        }
+        const clickedMonth = chart.data.labels[index] as string;
+
+        const entry = diagnosisHistory.find(
+          (history) => history.month === clickedMonth
+        );
+
+        if (entry) {
+          setHeartRate(entry.heart_rate.value);
+          setHeartRateLevel(entry.heart_rate.levels);
+          setRespiratoryRate(entry.respiratory_rate.value);
+          setRespiratoryRateLevel(entry.respiratory_rate.levels);
+          setTemperature(entry.temperature.value);
+          setTemperatureLevel(entry.temperature.levels);
+
+          if (datasetIndex === 0) {
+            setClickedSystolicValue(value as number);
+            setClickedSystolicLevel(
+              entry.blood_pressure.systolic.levels as
+                | "Higher than Average"
+                | "Lower than Average"
+                | "Normal"
+            );
+          } else {
+            setClickedDiastolicValue(value as number);
+            setClickedDiastolicLevel(
+              entry.blood_pressure.diastolic.levels as
+                | "Higher than Average"
+                | "Lower than Average"
+                | "Normal"
+            );
+          }
         }
       }
     },

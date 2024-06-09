@@ -6,45 +6,39 @@ const DiagnosticList = () => {
   const { jessicaTaylor } = useAppContext();
   return (
     <main>
-      <h4 className="font-extrabold text-[#072635] text-[20px]">Diagnostic List</h4>
-      <table className="text-sm text-left w-full mt-8">
-        <thead>
-          <tr className="bg-[#F6F7F8] rounded-t-full font-bold">
-            <th className="py-2 px-4 rounded-bl-full rounded-tl-full">
-              Problem/Diagnosis
-            </th>
-            <th className="py-2 px-4">Description</th>
-            <th className="py-2 px-4 rounded-br-full rounded-tr-full">
-              Status
-            </th>
-          </tr>
-        </thead>
-        <tbody className="max-h-60 overflow-y-auto">
-          <tr>
-            <td className="py-8 px-4">
-              {jessicaTaylor?.diagnostic_list.map((item) => (
-                <p key={item.name} className="mb-8">
+      <h4 className="font-extrabold text-[#072635] text-[20px]">
+        Diagnostic List
+      </h4>
+      <div className="relative mt-8 max-h-48 overflow-y-auto">
+        <table className="text-sm text-left w-full text-[#072635] table-fixed">
+          <thead className="sticky top-0 bg-[#F6F7F8]">
+            <tr className="rounded-t-full font-bold">
+              <th className="py-2 px-4 rounded-bl-full rounded-tl-full w-1/3">
+                Problem/Diagnosis
+              </th>
+              <th className="py-2 px-4 w-2/3">Description</th>
+              <th className="py-2 px-4 rounded-br-full rounded-tr-full w-1/3">
+                Status
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {jessicaTaylor?.diagnostic_list.map((item) => (
+              <tr key={item.name}>
+                <td className="py-5 px-4 w-1/3 whitespace-nowrap  text-ellipsis">
                   {item.name}
-                </p>
-              ))}
-            </td>
-            <td className="py-8 px-4">
-              {jessicaTaylor?.diagnostic_list.map((item) => (
-                <p key={item.name} className="mb-8">
+                </td>
+                <td className="py-5 px-4 w-1/3 whitespace-nowrap  text-ellipsis">
                   {item.description}
-                </p>
-              ))}
-            </td>
-            <td className="py-8 px-4">
-              {jessicaTaylor?.diagnostic_list.map((item) => (
-                <p key={item.name} className="mb-8">
+                </td>
+                <td className="py-5 px-4 w-1/3 whitespace-nowrap  text-ellipsis">
                   {item.status}
-                </p>
-              ))}
-            </td>
-          </tr>
-        </tbody>
-      </table>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </main>
   );
 };

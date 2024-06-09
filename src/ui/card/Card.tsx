@@ -1,5 +1,6 @@
 import React from "react";
 import { CustomImage } from "../image/CustomImage";
+import { BiSolidDownArrow, BiSolidUpArrow } from "react-icons/bi";
 
 const CustomCard: React.FC<{
   cardBackgroundColor: string;
@@ -16,9 +17,14 @@ const CustomCard: React.FC<{
   cardValue,
   cardValueUnit,
 }) => {
+  const levelDisplay: Record<string, JSX.Element | string> = {
+    "Higher than Average": <BiSolidUpArrow color="#072635" />,
+    "Lower than Average": <BiSolidDownArrow color="#072635" />,
+    Normal: "",
+  };
   return (
     <main
-      className="p-3 text-[#072635]"
+      className="px-3 py-3 text-[#072635]"
       style={{
         backgroundColor: cardBackgroundColor,
         borderRadius: "5%",
@@ -32,10 +38,13 @@ const CustomCard: React.FC<{
         height={70}
       />
       <p className="py-2 text-xs">{cardTitle}</p>
-      <p className="text-2xl font-black mb-5">
+      <p className="text-2xl font-extrabold mb-5">
         {cardValue} {cardValueUnit}
       </p>
-      <p className="text-xs">{cardStateLevel}</p>
+      <div className="flex items-center gap-3">
+        {levelDisplay[cardStateLevel]}
+        <p className="text-xs">{cardStateLevel}</p>
+      </div>
     </main>
   );
 };

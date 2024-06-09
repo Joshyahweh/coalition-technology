@@ -16,7 +16,7 @@ type NavTabKeys = 1 | 2 | 3 | 4 | 5;
 
 const Nav = () => {
   const router = useRouter();
-  const [active, setActive] = useState<NavTabKeys>(1);
+  const [active, setActive] = useState<NavTabKeys>(2);
 
   const nav: NavProperties[] = [
     {
@@ -61,7 +61,7 @@ const Nav = () => {
 
   const navSection = nav.map((item) => (
     <div
-      className={`flex items-center gap-2 text-sm text-[#072635] cursor-pointer ${
+      className={`flex font-bold items-center gap-2 text-sm text-[#072635] cursor-pointer ${
         active === item.id && "bg-[#01F0D0] px-3 py-2 rounded-full"
       }`}
       onClick={() => activeHandler(item.id)}

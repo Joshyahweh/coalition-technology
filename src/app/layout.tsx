@@ -3,6 +3,7 @@ import { Manrope } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/header/Header";
 import { AppWrapper } from "@/context";
+import { DiagnosisProvider } from "@/context/diagnosis-context";
 
 const manrope = Manrope({ subsets: ["latin"] });
 
@@ -20,7 +21,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={manrope.className}>
         <Header />
-        <AppWrapper>{children}</AppWrapper>
+        <AppWrapper>
+          <DiagnosisProvider>{children}</DiagnosisProvider>
+        </AppWrapper>
       </body>
     </html>
   );

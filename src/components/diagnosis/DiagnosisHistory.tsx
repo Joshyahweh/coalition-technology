@@ -1,10 +1,7 @@
 "use client";
 import { useAppContext } from "@/context";
-import { Patients } from "@/interface/tech-care";
-import { getAPI } from "@/service/service";
 import CustomChart from "@/ui/chart/chart";
-import React, { useEffect, useState } from "react";
-import { Line } from "react-chartjs-2";
+import React from "react";
 
 const DiagnosisHistory = () => {
   const { data, error, jessicaTaylor } = useAppContext();
@@ -15,8 +12,11 @@ const DiagnosisHistory = () => {
   if (!data) {
     return <div>Loading...</div>;
   }
+  if (jessicaTaylor === undefined) {
+    return <div>No data available</div>;
+  }
 
-  const jessicaDiagnosisHistory = jessicaTaylor?.diagnosis_history.map(
+  const jessicaDiagnosisHistory = jessicaTaylor.diagnosis_history.map(
     ({ month, blood_pressure }) => ({
       month,
       systolic: {
@@ -36,7 +36,11 @@ const DiagnosisHistory = () => {
 
   return (
     <main className="">
-      <CustomChart data={jessicaDiagnosisHistory} title="Blood pressure" />
+      <CustomChart
+        data={jessicaDiagnosisHistory}
+        title="Blood pressure"
+        diagnosisHistory={jessicaTaylor.diagnosis_history}
+      />
     </main>
   );
 };

@@ -48,6 +48,8 @@ export const AppWrapper: FC<{ children: ReactNode }> = ({ children }) => {
     fetchData();
   }, []);
 
+  
+
   const contextValue: AppContextProperties = {
     data,
     error,

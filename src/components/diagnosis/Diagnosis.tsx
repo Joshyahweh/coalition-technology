@@ -1,13 +1,25 @@
+"use client";
 import React from "react";
 import DiagnosisHistory from "./DiagnosisHistory";
 import CustomCard from "@/ui/card/Card";
 import DiagnosticList from "./DiagnosticList";
+import { useDiagnosisContext } from "@/context/diagnosis-context";
 
 const Diagnosis = () => {
+  const {
+    heartRate,
+    respiratoryRate,
+    temperature,
+    heartRateLevel,
+    respiratoryRateLevel,
+    temperatureLevel,
+  } = useDiagnosisContext();
   return (
     <main className="mx-5">
       <div className="bg-white px-5 py-4 rounded-2xl">
-        <h4 className="mt-4 mb-10 font-extrabold text-[20px]">Diagnosis History</h4>
+        <h4 className="mt-4 mb-10 font-extrabold text-[20px]">
+          Diagnosis History
+        </h4>
         <div className=" bg-[#F4F0FE] p-5 rounded-xl  mx-3">
           <DiagnosisHistory />
         </div>
@@ -15,25 +27,25 @@ const Diagnosis = () => {
           <CustomCard
             cardBackgroundColor="#E0F3FA"
             cardImage="/respiratory rate.svg"
-            cardStateLevel="Normal"
+            cardStateLevel={respiratoryRateLevel}
             cardTitle="Respiratory Rate"
-            cardValue={20}
+            cardValue={respiratoryRate}
             cardValueUnit="bpm"
           />
           <CustomCard
             cardBackgroundColor="#FFE6E9"
             cardImage="/temperature.svg"
-            cardStateLevel="Normal"
+            cardStateLevel={temperatureLevel}
             cardTitle="Temperature"
-            cardValue={98.6}
+            cardValue={temperature}
             cardValueUnit="°F"
           />
           <CustomCard
             cardBackgroundColor="#FFE6F1"
             cardImage="/HeartBPM.svg"
-            cardStateLevel="Lower than Average"
+            cardStateLevel={heartRateLevel}
             cardTitle="Heart Rate"
-            cardValue={78}
+            cardValue={heartRate}
             cardValueUnit="bpm"
           />
         </div>

@@ -61,7 +61,7 @@ const Profile = () => {
           width={200}
           height={200}
         />
-        <h4 className="text-[#072635]  text-2xl font-black my-5">
+        <h4 className="text-[#072635]  text-2xl font-extrabold my-5">
           {jessicaTaylor.name}
         </h4>
       </div>

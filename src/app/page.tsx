@@ -4,9 +4,8 @@ import Image from "next/image";
 
 export default function Home() {
   return (
-    <main className="">
-      {/* <Patients/> */}
-      {/* <Message/> */}
+    <main className="text-center mt-10">
+      <h2>Click the Patient tab to view</h2>
     </main>
   );
 }
